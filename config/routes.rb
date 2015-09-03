@@ -7,7 +7,7 @@ Rails.application.routes.draw do
   root to: "restaurants#index"
 
   devise_scope :user do
-    delete 'sign_out', :to => 'devise/sessions#destroy', :as => :destroy_user_session
+    delete 'sign_out', :to => 'devise/sessions#destroy', :as => :destroy_user_session_path
   end
 
   # The priority is based upon order of creation: first created -> highest priority.
