@@ -260,6 +260,6 @@ Devise.setup do |config|
   # so you need to do it manually. For the users scope, it would be:
   # config.omniauth_path_prefix = '/my_engine/users/auth'
 
-  config.omniauth :facebook, "444883532380894", "3bc7b80fcb6a5a5450be8ab914781b68", :scope => 'email'
+  config.omniauth :facebook, "444883532380894", "3bc7b80fcb6a5a5450be8ab914781b68", :scope => 'email', :info_fields => 'email'
 
 end
