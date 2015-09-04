@@ -1,15 +1,17 @@
 class RestaurantsController < ApplicationController
 
+  before_action :authenticate_user!, :except => [:index, :show]
+
   def index
     @restaurants = Restaurant.all
   end
 
   def new
-    @restaurant = Restaurant.new
+    @restaurant = current_user.restaurants.new
   end
 
   def create
-    @restaurant = Restaurant.new(restaurant_params)
+    @restaurant = current_user.restaurants.new(restaurant_params)
     if @restaurant.save
       redirect_to restaurants_path
     else

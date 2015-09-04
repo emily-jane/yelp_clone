@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 feature 'restaurants' do
+
   context 'no restaurants have been added' do
     scenario 'should display a prompt to add a restaurant' do
       visit '/restaurants'
@@ -10,8 +11,10 @@ feature 'restaurants' do
   end
 
   context 'restaurants have been added' do
-    before do
-      Restaurant.create(name: 'KFC')
+    before(:each) do
+      sign_up
+      user = User.last
+      user.restaurants.create(name: 'KFC')
     end
 
     scenario 'display restaurants' do
@@ -23,6 +26,7 @@ feature 'restaurants' do
 
   context 'creating restaurants' do
     scenario 'prompts user to fill out a form, then displays the new restaurant' do
+      sign_up
       visit '/restaurants'
       click_link 'Add a restaurant'
       fill_in 'Name', with: 'KFC'
@@ -33,6 +37,7 @@ feature 'restaurants' do
 
     context 'an invalid restaurant' do
       it 'does not let you submit a name that is too short' do
+        sign_up
         visit '/restaurants'
         click_link 'Add a restaurant'
         fill_in 'Name', with: 'kf'
@@ -43,15 +48,19 @@ feature 'restaurants' do
     end
 
     it "is not valid unless it has a unique name" do
-      Restaurant.create(name: "Moe's Tavern")
-      restaurant = Restaurant.new(name: "Moe's Tavern")
+      sign_up
+      user = User.last
+      user.restaurants.create(name: "Moe's Tavern")
+      restaurant = user.restaurants.new(name: "Moe's Tavern")
       expect(restaurant).to have(1).error_on(:name)
     end
   end
 
   context 'viewing restaurants' do
-
-    let!(:kfc){Restaurant.create(name:'KFC')}
+    before(:each) do
+      sign_up
+    end
+    let!(:kfc){User.last.restaurants.create(name:'KFC')}
 
     scenario 'lets a user view a restaurant' do
       visit '/restaurants'
@@ -62,9 +71,10 @@ feature 'restaurants' do
   end
   context 'editing restaurants' do
 
-  before {Restaurant.create name: 'KFC'}
-
     scenario 'let a user edit a restaurant' do
+      sign_up
+      user = User.last
+      user.restaurants.create name: 'KFC'
       visit '/restaurants'
       click_link 'Edit KFC'
       fill_in 'Name', with: 'Kentucky Fried Chicken'
@@ -77,9 +87,10 @@ feature 'restaurants' do
 
   context 'deleting restaurants' do
 
-  before {Restaurant.create name: 'KFC'}
-
     scenario 'removes a restaurant when a user clicks a delete link' do
+      sign_up
+      user = User.last
+      user.restaurants.create name: 'KFC'
       visit '/restaurants'
       click_link 'Delete KFC'
       expect(page).not_to have_content 'KFC'
